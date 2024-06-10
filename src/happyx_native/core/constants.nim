@@ -59,3 +59,26 @@ const
       ]
     else:
       [""]
+  FirefoxPaths* =
+    when OS == "win":
+      [
+        # default for both 32-bit and 64-bit
+        r"\Program Files\Mozilla Firefox\firefox.exe",
+
+        # default for 32-bit on 64-bit machine
+        r"\Program Files (x86)\Mozilla Firefox\firefox.exe",
+
+        # https://support.mozilla.org/en-US/questions/1276424#answer-1341336
+        getHomeDir() / r"\AppData\Local\Mozilla Firefox\firefox.exe",
+      ]
+    elif OS == "unix":
+      [
+        "firefox"
+      ]
+    elif OS == "mac":
+      [
+        "/Applications/Firefox.app/Contents/MacOS",
+        "/Applications/FirefoxNightly.app/Contents/MacOS"
+      ]
+    else:
+      [""]

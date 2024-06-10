@@ -7,7 +7,7 @@ import
     macros, os, sequtils, strformat,
     osproc, json, threadpool, browsers,
     uri, tables, terminal, parsecfg,
-    jsonutils
+    jsonutils, strutils
   ],
   happyx,
   ../cli/utils,
@@ -239,17 +239,24 @@ template nativeAppImpl*(appDirectory: string = "/assets", port: int = 5123,
         assert data.exitCode == 0
     when appMode:
       var arguments: seq[string] = @[]
-      arguments.add "--enable-gpu"
-      arguments.add "--window-size=\"" & $w & "," & $h & "\""
-      arguments.add "--window-position=\"" & $x & "," & $y & "\""
-      if title.len > 0:
-        arguments.add "--window-name=\"" & title & "\""
+      when defined(firefox):
+        arguments.add "-width " & $w
+        arguments.add "-height " & $h
+        # firefox does not support window positioning
+      else:
+        arguments.add "--enable-gpu"
+        arguments.add "--window-size=\"" & $w & "," & $h & "\""
+        arguments.add "--window-position=\"" & $x & "," & $y & "\""
+        if title.len > 0:
+          arguments.add "--window-name=\"" & title & "\""
       when defined(yandex):
         spawn openYandex(port, arguments)
       elif defined(edge):
         spawn openEdge(port, arguments)
       elif defined(chrome):
         spawn openChrome(port, arguments)
+      elif defined(firefox):
+        spawn openFirefox(port, "HPXNative", arguments)
       elif defined(webview):        
         spawn createHpxWebview(w, h, port, resizeable)
       else:

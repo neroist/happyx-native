@@ -38,6 +38,9 @@ elif OS == "win":
     for path in EdgePaths:
       if path.absolutePath.fileExists:
         return path
+    for path in FirefoxPaths:
+      if path.absolutePath.fileExists:
+        return path
     result = getUnicodeValue(
       path = r"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe",
       key = "", handle = HKEY_LOCAL_MACHINE
@@ -58,6 +61,9 @@ elif OS == "unix":
       if execCmd("which " & path) == 0:
         return path
     for path in EdgePaths:
+      if execCmd("which " & path) == 0:
+        return path
+    for path in FirefoxPaths:
       if execCmd("which " & path) == 0:
         return path
     raise newException(BrowserNotFound, "could not find Default browser")
